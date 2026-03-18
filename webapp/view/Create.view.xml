@@ -1,0 +1,482 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.uxap"
+    xmlns:fo="sap.f"
+    xmlns:m="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:t="sap.ui.table"
+    xmlns:mdct="sap.ui.mdc.table"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:layout="sap.ui.layout"
+    xmlns:rowmodes="sap.ui.table.rowmodes"
+    controllerName="zgatepass.controller.Create"
+    height="100%"
+>
+    <m:Page
+        id="_IDGenPage1"
+        showHeader="false"
+        contentOnlyBusy="true"
+    >
+        <m:Panel
+            id="_IDGenPanel"
+            width="auto"
+            class="sapUiResponsiveMargin"
+            headerText="General Information"
+        >
+            <m:content>
+                <m:VBox id="_IDGenVBox2">
+                    <f:SimpleForm
+                        id="EntryHeader"
+                        editable="true"
+                        layout="ResponsiveGridLayout"
+                        labelSpanXL="4"
+                        labelSpanL="4"
+                        labelSpanM="4"
+                        labelSpanS="12"
+                        adjustLabelSpan="false"
+                        emptySpanXL="0"
+                        emptySpanL="0"
+                        emptySpanM="0"
+                        emptySpanS="0"
+                        columnsXL="3"
+                        columnsL="3"
+                        columnsM="2"
+                        singleContainerFullSize="false"
+                    >
+                        <f:content>
+                            <core:Title
+                                id="_IDGenTitle"
+                                text=""
+                            />
+                            <m:Label id="_IDGenLabel11"
+                                text="Plant"
+                                required="true"
+                            />
+                            <m:Input
+                                id="Plant"
+                                value="{Header>/Plant}"
+                                required="true"
+                                showValueHelp="true"
+                                valueHelpRequest="getPlantDialog"
+                                editable="true"
+                                showSuggestion="true"
+                                showTableSuggestionValueHelp="true"
+                                suggestionRows="{/I_PlantStdVH}"
+                                suggestionItemSelected="onSuggestionItemSelectedPlant"
+                            >
+                                <m:suggestionColumns>
+                                    <m:Column id="_IDGenColumn20">
+                                        <m:Label id="_IDGenLabel12" text="Plant" />
+                                    </m:Column>
+                                    <m:Column id="_IDGenColumn23">
+                                        <m:Label
+                                            id="_IDGenLabel33"
+                                            text="Name"
+                                        />
+                                    </m:Column>
+                                </m:suggestionColumns>
+
+                                <m:suggestionRows>
+                                    <m:ColumnListItem id="_IDGenColumnListItem">
+                                        <m:Label
+                                            id="_IDGenLabel34"
+                                            text="{Plant}"
+                                        />
+                                        <m:Label
+                                            id="_IDGenLabel37"
+                                            text="{PlantName}"
+                                        />
+                                    </m:ColumnListItem>
+                                </m:suggestionRows>
+                            </m:Input>
+                            <m:Label id="_IDGenLabel13" text="Type" />
+                            <m:ComboBox
+                                id="EntryType"
+                                showSecondaryValues="true"
+                                value="{Header>/Type}"
+                                editable="true"
+                                required="true"
+                                change="entryTypeChange" 
+                                items="{
+                                    path: '/ZI_GATEPASSTYPEVH',
+                                    sorter: { path: 'Value' }
+                                }"
+                            >
+                                <core:ListItem
+                                    id="_IDGenListItem1"
+                                    text="{Value}"
+                                    additionalText="{Description}"
+                                />
+                            </m:ComboBox>
+                            <m:Label
+                                id="RefDocLabel"
+                                text="Marketplace"
+                            />
+                            <m:Input
+                                id="DriverName"
+                                type="Text"
+                                value="{Header>/SalesmanName}"
+                            />
+
+                            <m:Label
+                                id="_IDGenLabel145"
+                                text="Driver Name"
+                            />
+                            <m:Input
+                                id="_IDGenInput1"
+                                value="{Header>/DriverName}"
+                            />
+
+                        <m:Label
+                            id="_IDGenLabel99"
+                            text="Driver Number"
+                        />
+                        <m:Input
+                            id="_IDGenInput14"
+                            value="{Header>/DriverNo}"
+                            type="Number"
+                            maxLength="10"
+                        />
+
+                            <m:Label
+                                id="BillAmountLabel"
+                                text="Route"
+                            />
+                            <m:Input
+                                id="RouteName"
+                                value="{Header>/RouteName}"
+                            />
+
+                            <m:Label id="_IDGenLabel14" text="Document" />
+                            <m:Input id="_IDGenInput"
+                                showValueHelp="true"
+                                valueHelpRequest="handlePTCValueHelp"
+                                change="docnochange"
+                            />
+
+                            <core:Title
+                                id="_IDGenTitle2"
+                                text=""
+                            />
+
+                            <m:Label
+                                id="_IDGenLabel15"
+                                text="Crate Quantity"
+                            />
+                            <m:Input
+                                id="_IDGenDatePicker1"
+                                value="{Header>/Cmcrate1}"
+                            />
+                            <m:Label
+                                id="ExpectedReturnDateLabel"
+                                text="Jali Quantity"
+                            />
+                            <m:Input
+                                id="ExpectedReturnDate"
+                                value="{Header>/Cmcrate2}"
+                            />
+
+                            <m:Label
+                                id="_IDGenLabel6"
+                                text="CB Quantity"
+                            />
+                            <m:Input
+                                id="_IDGenInput8"
+                                value="{Header>/Cb}"
+                            />
+
+                            
+                            <m:Label
+                                id="_IDGenLabel8"
+                                text="Bill Amount"
+                            />
+                            <m:Input
+                                id="_IDGenInput3"
+                                editable="false"
+                                value="{Header>/BillAmount}"
+                            />
+
+                           <m:Label
+                                id="_IDGenLabel81"
+                                text="Purchasing Group"
+                            />
+                            <m:Input
+                                id="_IDGenInput31"
+                                editable="true"
+                                value="{Header>/PurchasingGroup}"
+                                showValueHelp="true"
+                                valueHelpRequest="onValueHelpRequest"
+                            />
+
+                            <m:Label id="_IDGenLabel16" text="Remarks" />
+                            <m:TextArea id="_IDGenTextArea" value="{Header>/Remarks}" />
+
+                            <core:Title
+                                id="_IDGenTitle3"
+                                text=""
+                            />
+
+                            <m:Label
+                                id="_IDGenLabel245"
+                                text="Mode of Transport"
+                            />
+                            <m:Input
+                                id="VehicleNumber"
+                                value="{Header>/VehicleNumber}"
+                            />
+
+                            <m:Label id="_IDGenLabel17" text="Vehicle Number" />
+                            <m:Input id="_IDGenInput2" value="{Header>/VrnNo}" liveChange="onValueChange" maxLength="10" />
+                            <m:Label id="_IDGenLabel26"  text="Weigh Slip No"/>
+                            <m:Input id="_IDGenInput4" value="{Header>/WeighSlipNo}"/>
+
+                       <m:Label
+                            id="_IDGenLabel261"
+                            text="Gross Wt"
+                        />
+                        <m:Input
+                            id="_IDGenInput16"
+                            value="{Header>/GrossWt}"
+                            change="grosswtChange"
+                            type="Number"
+                        />
+                        <m:Label
+                            id="_IDGenLabel51"
+                            text="Tare Wt"
+                        />
+                        <m:Input
+                            id="_IDGenInput11"
+                            value="{Header>/TareWt}"
+                            type="Number"
+                            change="tarewtChange"
+                        />
+                        <m:Label
+                            id="_IDGenLabel121"
+                            text="Net Wt"
+                        />
+                        <m:Input
+                            id="_IDGenInput51"
+                            value="{Header>/NetWt}"
+                            type="Number"
+                            editable="false"
+                        />
+                        </f:content>
+                    </f:SimpleForm>
+                </m:VBox>
+            </m:content>
+        </m:Panel>
+        <fo:DynamicPage
+            id="dynamicPageId"
+            fitContent="true"
+        >
+            <fo:content>
+                <t:Table
+                    rows="{Details>/OrderDetailsTable}"
+                    id="LineTable"
+                >
+                    <t:extension>
+                        <m:OverflowToolbar id="_IDGenOverflowToolbar" style="Clear">
+                            <m:Title id="_IDGenTitle1" text="Lines" />
+                            <m:ToolbarSpacer id="_IDGenToolbarSpacer2" />
+                            <m:Button
+                                id="btnAdd"
+                                text="Add"
+                                press="addLine"
+                                enabled="true"/>
+                            <m:Button id="_IDGenButton3"
+                                text="Remove"
+                                press="deleteLine"
+                            />
+                        </m:OverflowToolbar>
+                    </t:extension>
+                    <t:rowMode>
+                        <rowmodes:Interactive id="_IDGenInteractive" minRowCount="5" />
+                    </t:rowMode>
+<t:columns>
+    <!-- S. No. -->
+    <t:Column id="_IDGenColumn" width="11rem">
+            <m:Label id="_IDGenLabel18" text="S. No." />
+            <t:template>
+                <m:Text id="_IDGenText" text="{Details>SNo}" />
+            </t:template>
+        </t:Column>
+
+    <t:Column width="11rem">
+        <m:Label text="{Details>/DocumentLabel}" />
+        <t:template>
+            <m:Input
+                id="IDMaterial"
+                value="{Details>DocumentNo}"
+                showValueHelp="{Details>/VisibilityGP}"
+                valueHelpRequest="handlePCValueHelp"
+                type="Text"/>
+        </t:template>
+    </t:Column>
+
+    <!-- ODN No -->
+    <t:Column width="11rem" visible="{Details>/Visibility}">
+        <m:Label text="ODN No"  />
+        <t:template>
+            <m:Input
+                value="{Details>DocumentReference}"
+                editable="true"/>
+        </t:template>
+    </t:Column>
+
+    <t:Column width="11rem" visible="{Details>/VisibilityGP}">
+        <m:Label text="Material Description"  />
+        <t:template>
+            <m:Input
+                value="{Details>MaterialName}"
+                editable="false"
+                />
+        </t:template>
+    </t:Column>
+
+    <t:Column width="11rem" visible="{Details>/Visibility}">
+        <m:Label text="Document Date"/>
+        <t:template>
+            <m:DatePicker
+                value="{Details>DocumentDate}"
+                displayFormat="dd-MM-yyyy"
+                valueFormat="yyyy-MM-dd"
+                editable="true" />
+        </t:template>
+    </t:Column>
+
+    <t:Column width="11rem" visible="{Details>/VisibilityGP}">
+        <m:Label text="Supplier Code"/>
+        <t:template>
+            <m:Input
+                showValueHelp="true"
+                valueHelpRequest="handleSupplierVH"
+                value="{Details>SupplierCode}"
+                editable="true"/>
+        </t:template>
+    </t:Column>
+
+    <t:Column width="11rem" visible="{Details>/VisibilityGP}">
+        <m:Label text="Supplier Name" />
+        <t:template>
+            <m:Input
+                value="{Details>SupplierName}"
+                editable="false" />
+        </t:template>
+    </t:Column>
+
+    <!-- Amount -->
+    <t:Column width="11rem">
+        <m:Label text="Amount" />
+        <t:template>
+            <m:Input
+                value="{Details>Amount}"
+                type="Number"
+                editable="true" 
+                change="calcAmount"/>
+        </t:template>
+    </t:Column>
+
+    <!-- Currency -->
+    <t:Column width="11rem" >
+        <m:Label
+                id="_IDGenLabel815"
+                text="Currency"
+            />
+        <t:template>
+             <m:Input
+                value="{Details>Currency}"
+                type="Text"
+                required="true"
+                editable="false" />
+        </t:template>
+    </t:Column>
+
+    <!-- Quantity -->
+    <t:Column width="11rem">
+        <m:Label text="Quantity" />
+        <t:template>
+            <m:Input
+                value="{Details>Quantity}"
+                type="Number"
+                required="true"
+                editable="true" />
+        </t:template>
+    </t:Column>
+
+    <!-- Unit -->
+    <t:Column width="11rem" >
+        <m:Label
+                id="_IDGenLabel816"
+                text="Unit"
+            />
+        <t:template>
+             <m:Input
+                value="{Details>Unit}"
+                type="Text"
+                required="true"
+                editable="false" />
+        </t:template>
+    </t:Column>
+    
+    <!-- Expected Retrun Date -->
+    <t:Column width="11rem" visible="{Details>/VisibilityRGP}">
+        <m:Label
+                id="_IDGenLabel811"
+                text="Expected Return Date"
+            />
+        <t:template>
+             <m:DatePicker
+                    value="{Details>ExpectedReturnDate}"
+                    displayFormat="dd-MM-yyyy"
+                    valueFormat="yyyy-MM-dd"
+                    editable="true"
+                     />
+        </t:template>
+    </t:Column>
+
+    <!-- Remakrs -->
+    <t:Column width="12rem">
+        <m:Label text="Remarks" />
+        <t:template>
+            <m:Input
+                value="{Details>Remarks}"
+                type="Text"
+                maxLength="100"
+                editable="true" />
+        </t:template>
+    </t:Column>
+
+</t:columns>
+                </t:Table>
+            </fo:content>
+        </fo:DynamicPage>
+
+        <m:footer>
+            <m:OverflowToolbar id="_IDGenOverflowToolbar4">
+                <m:Button
+                    id="_IDGenButton16"
+                    visible="{=!!${message>/}.length}"
+                    icon="{ path: '/', formatter: '.buttonIconFormatter' }"
+                    type="{ path: '/', formatter: '.buttonTypeFormatter' }"
+                    text="{path: '/', formatter: '.highestSeverityMessages' }"
+                    press=".handleMessagePopoverPress"
+                    ariaHasPopup="Dialog"
+                />
+
+                <m:ToolbarSpacer id="_IDGenToolbarSpacer5" />
+                <m:Button
+                    id="_IDGenButton6"
+                    type="Default"
+                    text="Cancel"
+                    press="cancel"
+                />
+                <m:Button
+                    id="_IDGenButton9"
+                    type="Emphasized"
+                    text="Save"
+                    press="save"
+                />
+            </m:OverflowToolbar>
+        </m:footer>
+    </m:Page>
+</mvc:View>

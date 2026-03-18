@@ -1,0 +1,169 @@
+{
+  "_version": "1.73.1",
+  "sap.app": {
+    "id": "zgatepass",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.20.0",
+      "toolsId": "cfa27c54-4cb8-4129-9711-775a6b634df0"
+    },
+    "dataSources": {
+      "ZUI_GATEPASS_VAN": {
+        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZUI_GATEPASS_VAN',Version='0001')/$value/",
+        "type": "ODataAnnotation",
+        "settings": {
+          "localUri": "localService/mainService/ZUI_GATEPASS_VAN.xml"
+        }
+      },
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZUI_GATEPASS/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "ZUI_GATEPASS_VAN"
+          ],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "ZGATEENTRY_SV-Display": {
+          "semanticObject": "ZGATEENTRY_SV",
+          "action": "Display",
+          "title": "{{ZGATEENTRY_SV-Display.flpTitle}}",
+          "subTitle": "{{ZGATEENTRY_SV-Display.flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        },
+        "Z_GATEPASS_SB-list": {
+          "semanticObject": "Z_GATEPASS_SB",
+          "action": "list",
+          "title": "{{Z_GATEPASS_SB-list.flpTitle}}",
+          "subTitle": "{{Z_GATEPASS_SB-list.flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.136.12",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "zgatepass.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {}
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "zgatepass.view",
+        "async": true,
+        "viewPath": "zgatepass.view"
+      },
+      "routes": [
+        {
+          "name": "RouteView1",
+          "pattern": ":?query:",
+          "target": [
+            "TargetView1"
+          ]
+        },
+        {
+          "name": "GPCreate",
+          "pattern": "GP-Create",
+          "target": [
+            "TargetCreate"
+          ]
+        },
+        {
+          "name": "GPDetails",
+          "pattern": "GP-Details/{GateEntry}",
+          "target": [
+            "TargetDetails"
+          ]
+        }
+      ],
+      "targets": {
+        "TargetView1": {
+          "id": "View1",
+          "name": "View1"
+        },
+        "TargetCreate": {
+          "viewId": "GPCreate",
+          "viewName": "Create"
+        },
+        "TargetDetails": {
+          "viewId": "GPDetails",
+          "viewName": "Details"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "zgatepass.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    }
+  }
+}

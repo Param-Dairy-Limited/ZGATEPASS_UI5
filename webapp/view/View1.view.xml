@@ -1,0 +1,207 @@
+<mvc:View
+    controllerName="zgatepass.controller.View1"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:t="sap.ui.table"
+    xmlns:smartFilterBar="sap.ui.comp.smartfilterbar"
+    xmlns:smartTable="sap.ui.comp.smarttable"
+    xmlns:l="sap.ui.layout"
+    xmlns:core="sap.ui.core"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+    height="100%"
+>
+    <VBox
+        id="_IDGenVBox1"
+        fitContainer="true"
+        height="100%"
+    >
+        <smartFilterBar:SmartFilterBar
+            id="_IDGenSmartFilterBar"
+            entitySet="GatePass"
+            persistencyKey="SmartFilter_Explored"
+        >
+            <smartFilterBar:controlConfiguration>
+                <smartFilterBar:ControlConfiguration
+                    id="_IDGenControlConfiguration"
+                    key="EntryDate"
+                    label="From Date"
+                    visibleInAdvancedArea="true"
+                    width="300px"
+                >
+                    <smartFilterBar:customControl>
+                        <DatePicker
+                            id="DP3"
+                            valueFormat="yyyy-MM-dd"
+                            value="{Status>/FromDate}"
+                            displayFormat="dd-MM-yyyy"
+                        />
+                    </smartFilterBar:customControl>
+                </smartFilterBar:ControlConfiguration>
+
+                <smartFilterBar:ControlConfiguration
+                    id="_IDGenControlConfiguration11"
+                    key="OutDate"
+                    label="To Date"
+                    visibleInAdvancedArea="true"
+                    width="300px"
+                >
+                    <smartFilterBar:customControl>
+                        <DatePicker
+                            id="DP2"
+                            valueFormat="yyyy-MM-dd"
+                            displayFormat="dd-MM-yyyy"
+                            value="{Status>/ToDate}"
+                        />
+                    </smartFilterBar:customControl>
+                </smartFilterBar:ControlConfiguration>
+
+                <smartFilterBar:ControlConfiguration
+                    id="_IDGenControlConfiguration2"
+                    visibleInAdvancedArea="true"
+                    key="Cancelled"
+                    label="Status"
+                    width="300px"
+                >
+                    <smartFilterBar:customControl>
+                        <Select
+                            id="_IDGenSelect1"
+                            items="{Status>/Filter}"
+                        >
+                            <core:ListItem
+                                id="_IDGenListItem"
+                                text="{Status>Name}"
+                            />
+                        </Select>
+                    </smartFilterBar:customControl>
+                </smartFilterBar:ControlConfiguration>
+                <smartFilterBar:ControlConfiguration
+                    id="_IDGenControlConfiguration1"
+                    key="Plant"
+                    label="Plant"
+                    mandatory="mandatory"
+                    visibleInAdvancedArea="true"
+                    width="300px"
+                >
+                    <smartFilterBar:customControl>
+                        <Input
+                            id="PlantInput"
+                            value="PU01"
+                        />
+                    </smartFilterBar:customControl>
+                </smartFilterBar:ControlConfiguration>
+            </smartFilterBar:controlConfiguration>
+
+            <smartFilterBar:layoutData>
+                <FlexItemData
+                    id="_IDGenFlexItemData1"
+                    shrinkFactor="0"
+                />
+            </smartFilterBar:layoutData>
+        </smartFilterBar:SmartFilterBar>
+        <smartTable:SmartTable
+            id="_IDGenSmartTable"
+            entitySet="GatePass"
+            tableType="Table"
+            header="Gate Pass"
+            smartFilterId="_IDGenSmartFilterBar"
+            class="sapUiResponsiveContentPadding"
+            persistencyKey="SmartTablePersistencyKey"
+            useVariantManagement="true"
+            useTablePersonalisation="true"
+            beforeRebindTable="onBeforeRebindTable"
+            enableAutoColumnWidth="true"
+            width="100%"
+        >
+            <t:Table
+                id="_IDGenTable"
+                selectionMode="Single"
+                rowActionCount="1"
+            >
+                <t:rowActionTemplate>
+                    <t:RowAction id="_IDGenRowAction1">
+                        <t:RowActionItem id="_IDGenRowActionItem"
+                            type="Navigation"
+                            press="navigate"
+                        />
+                    </t:RowAction>
+                </t:rowActionTemplate>
+            </t:Table>
+            <smartTable:customToolbar>
+                <OverflowToolbar id="_IDGenOverflowToolbar2">
+                    <ToolbarSpacer id="_IDGenToolbarSpacer" />
+
+                    <Button
+                        id="_IDGenButton4"
+                        text="Create"
+                        press="onClickCreate"
+                    />
+
+                       <Button id="_IDGenButton5" 
+                    text="Vehicle Out"
+                    press="onClickVhOut"
+                    />
+
+                      <Button id="_IDGenButton"
+                        text="Slip Print"
+                        press="onSlipPrint"
+                    />
+                    <!-- <Button
+                        id="Delete1"
+                        press="onClickVhOut"
+                        text="Vehicle Out"
+                    /> -->
+                </OverflowToolbar>
+            </smartTable:customToolbar>
+            <smartTable:layoutData>
+                <FlexItemData
+                    id="_IDGenFlexItemData2"
+                    growFactor="1"
+                    baseSize="0%"
+                />
+            </smartTable:layoutData>
+        </smartTable:SmartTable>
+    </VBox>
+    <Dialog
+        id="_IDGenDialog2"
+        title="Vehicle Out"
+        class="sapUiContentPadding"
+    >
+        <content>
+            <VBox id="_IDGenVBox" width="100%">
+
+                <Label id="_IDGenLabel1" text="Remarks:" />
+                <TextArea
+                    id="VehOutRemarks1"
+                    width="100%"
+                />
+                <Label id="_IDGenLabel2" text="Out Date" />
+                <DatePicker
+                    id="OutDate1"
+                    valueFormat="yyyy-MM-ddTHH:mm:ss"
+                    displayFormat="yyyy-MM-dd"
+                />
+                <Label id="_IDGenLabel3" text="Out Time" />
+                <TimePicker
+                    id="OutTime1"
+                    valueFormat="PTHH'H'mm'M'ss'S'"
+                />
+            </VBox>
+        </content>
+
+        <!-- Footer Buttons -->
+        <beginButton>
+            <Button id="_IDGenButton1"
+                text="Post"
+                type="Emphasized"
+                press="onClickPost"
+            />
+        </beginButton>
+        <endButton>
+            <Button id="_IDGenButton2"
+                text="Cancel"
+                press="onCloseDialog"
+            />
+        </endButton>
+    </Dialog>
+</mvc:View>

@@ -1,0 +1,19 @@
+/* Enter your custom styles here */
+/* Enter your custom styles here */
+@media (min-width: 80rem) {
+    .sapUiMedia-Std-Desktop .sapUShellApplicationContainer.sapUShellApplicationContainerLimitedWidth {
+        width: 100%!important;
+    }
+}
+
+[id$="---GateEntryMaintain--_IDGenTable"] {
+    height: 63vh;
+    overflow-y: auto;
+}
+
+
+[id$="--GPCreate--_IDGenTitle"],
+[id$="--GPCreate--_IDGenTitle2"],
+[id$="--GPCreate--_IDGenTitle3"]{
+    display: none!important;
+}

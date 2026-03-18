@@ -1,0 +1,66 @@
+<core:FragmentDefinition
+    xmlns="sap.ui.comp.valuehelpdialog"
+    xmlns:m="sap.m"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:core="sap.ui.core"
+>
+    <ValueHelpDialog id="SupplierVHDialog"
+        title="Select Supplier"
+        ok=".onSupplierVHokPress"
+        cancel=".onPCVHcancelPress"
+        afterClose=".onPCVHAfterClosePress"
+        supportRanges="true"
+        key="Supplier"
+        descriptionKey="SupplierName"
+    >
+        <filterBar>
+            <fb:FilterBar id="SupplierFilterBar"
+                advancedMode="true"
+                search=".onSupplierVHSearchPress"
+                isRunningInValueHelpDialog="true"
+            >
+                <fb:filterGroupItems>
+                    <fb:FilterGroupItem id="FGI_Supplier"
+                        groupName="__$INTERNAL$"
+                        name="Supplier"
+                        label="Supplier ID"
+                        visibleInFilterBar="true"
+                    >
+                        <fb:control>
+                            <m:Input id="Input_Supplier"
+                                name="Supplier"
+                                showSuggestion="true"
+                                suggestionItems="{
+                                    path: '/Supplier',
+                                    sorter: { path: 'Supplier' }
+                                }"
+                            >
+                                <core:Item key="{Supplier}" text="{Supplier}" />
+                            </m:Input>
+                        </fb:control>
+                    </fb:FilterGroupItem>
+
+                    <fb:FilterGroupItem id="FGI_SupplierName"
+                        groupName="__$INTERNAL$"
+                        name="SupplierName"
+                        label="Supplier Name"
+                        visibleInFilterBar="true"
+                    >
+                        <fb:control>
+                            <m:Input id="Input_SupplierName"
+                                name="SupplierName"
+                                showSuggestion="true"
+                                suggestionItems="{
+                                    path: '/Supplier',
+                                    sorter: { path: 'SupplierName' }
+                                }"
+                            >
+                                <core:Item key="{SupplierName}" text="{SupplierName}" />
+                            </m:Input>
+                        </fb:control>
+                    </fb:FilterGroupItem>
+                </fb:filterGroupItems>
+            </fb:FilterBar>
+        </filterBar>
+    </ValueHelpDialog>
+</core:FragmentDefinition>

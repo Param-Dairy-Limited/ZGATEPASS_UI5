@@ -1,0 +1,296 @@
+<mvc:View
+    xmlns:rowmodes="sap.ui.table.rowmodes"
+    xmlns="sap.m"
+    xmlns:uxap="sap.uxap"
+    xmlns:core="sap.ui.core"
+    xmlns:table="sap.ui.table"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:smartForm="sap.ui.comp.smartform"
+    xmlns:smartTable="sap.ui.comp.smarttable"
+    xmlns:smartField="sap.ui.comp.smartfield"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+    controllerName="zgatepass.controller.Details"
+    height="100%"
+>
+    <Page
+        id="_IDGenPage4"
+        showHeader="true"
+        showFooter="false"
+    >
+        <customHeader>
+            <OverflowToolbar id="_IDGenOverflowToolbar6">
+                <ToolbarSpacer id="_IDGenToolbarSpacer1" />
+                <Button
+                    id="CancelEntry"
+                    press="onClickCancelEntry"
+                    text="Cancel Entry"
+                />
+                <Button
+                    id="EditEntry"
+                    press="onClickEdit"
+                    text="Edit"
+                    visible="{= ${edit>/editMode} === 'nonEditable' }"
+                />
+                <Button
+                    id="Save"
+                    press="onClickSave"
+                    text="Save"
+                    visible="{= ${edit>/editMode} === 'editable' }"
+                />
+                <!-- <Button
+                    id="Delete"
+                    press="onClickVhOut"
+                    text="Vehicle Out"
+                /> -->
+            </OverflowToolbar>
+        </customHeader>
+        <uxap:ObjectPageLayout
+            id="ObjectPageLayout"
+            headerContentPinned="true"
+            upperCaseAnchorBar="false"
+        >
+            <uxap:sections>
+                <uxap:ObjectPageSection
+                    titleUppercase="false"
+                    title="Gate Pass"
+                    id="_IDGenPanel2"
+                    class="sapUiResponsiveMargin"
+                >
+                   <uxap:subSections>
+    <uxap:ObjectPageSubSection id="goalsSectionSS1">
+        <uxap:blocks>
+
+            <smartForm:SmartForm
+                id="smartForm"
+                app:defaultCheckBoxDisplayBehaviour="OnOff"
+                app:defaultDropDownDisplayBehaviour="idAndDescription"
+                editable="{= ${edit>/editMode} === 'editable' }"
+                validationMode="Async"
+            >
+
+                <smartForm:layout>
+                    <smartForm:ColumnLayout
+                        columnsM="2"
+                        columnsL="3"
+                        columnsXL="3"
+                    />
+                </smartForm:layout>
+
+                <!-- BASIC DETAILS -->
+                <smartForm:Group>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{GatePass}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{EntryDate}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{Type}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{Plant}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{SalesmanName}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{RouteName}"/>
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{VehicleNumber}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{VrnNo}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{DriverName}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{DriverNo}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{PurchasingGroup}" />
+                    </smartForm:GroupElement>
+
+                </smartForm:Group>
+
+                <!-- CRATE DETAILS -->
+                <smartForm:Group>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{Cmcrate1}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{Cmcrate2}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{Cb}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{WeighSlipNo}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement visible="{VehicleOut}">
+                        <smartField:SmartField value="{OutDate}" />
+                        <smartField:SmartField value="{OutTime}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement visible="{VehicleOut}">
+                        <smartField:SmartField value="{VehOutRemarks}" />
+                    </smartForm:GroupElement>
+
+                </smartForm:Group>
+
+                <!-- WEIGHT & BILL -->
+                <smartForm:Group>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{BillAmount}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{GrossWt}" id="_IDGenSmartField12" change="grosswtChange"   />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{TareWt}" id="_IDGenSmartField13" change="tarewtChange"/>
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{NetWt}" id="_IDGenSmartField21"/>
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement visible="{VehicleOut}">
+                        <smartField:SmartField value="{OutMeterReading}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField value="{Remarks}" />
+                    </smartForm:GroupElement>
+
+                    <smartForm:GroupElement>
+                        <smartField:SmartField
+                            value="{= ${Cancelled} === true ? 'Yes' : 'No'}"
+                        />
+                    </smartForm:GroupElement>
+
+                </smartForm:Group>
+
+            </smartForm:SmartForm>
+
+        </uxap:blocks>
+    </uxap:ObjectPageSubSection>
+</uxap:subSections>
+                </uxap:ObjectPageSection>
+                <uxap:ObjectPageSection
+                    titleUppercase="false"
+                    id="_IDGenPanel4"
+                    class="sapUiResponsiveMargin"
+                    title="Lines"
+                    showTitle="false"
+                >
+                    <uxap:subSections>
+                        <uxap:ObjectPageSubSection
+                            id="_IDGenObjectPageSubSection2"
+                        >
+                            <uxap:blocks>
+                                <smartTable:SmartTable
+                                    id="_IDGenSmartTable1"
+                                    entitySet="GatePassLine"
+                                    smartFilterId="_IDGenSmartFilterBar"
+                                    tableType="ResponsiveTable"
+                                    fieldGroupIds="Entrydate"
+                                    header="Entry Lines"
+                                    persistencyKey="SmartTableAnalytical_Explored"
+                                    enableAutoBinding="true"
+                                    class="sapUiResponsiveContentPadding"
+                                    enableAutoColumnWidth="true"
+                                    editTogglable="false"
+                                    editable="{= ${edit>/editMode} === 'editable' }"
+                                    ignoredFields="__metadata"
+                                    app:useSmartToggle="true"
+                                    showFullScreenButton="true"
+                                    beforeRebindTable="onBeforeRebindTable"
+                                    initiallyVisibleFields="PassLineNo,DocumentNo,DocumentReference,MaterialName,DocumentDate,SupplierCode,SupplierName,Amount,Quantity,VrNo,Remarks,ExpectedReturnDate"
+                                >
+                                    <table:Table
+                                        id="_IDGenTable1"
+                                    />
+                                    <smartTable:layoutData>
+                                        <FlexItemData
+                                            id="_IDGenFlexItemData3"
+                                            growFactor="1"
+                                            baseSize="0%"
+                                        />
+                                    </smartTable:layoutData>
+                                </smartTable:SmartTable>
+                            </uxap:blocks>
+                        </uxap:ObjectPageSubSection>
+                    </uxap:subSections>
+                </uxap:ObjectPageSection>
+            </uxap:sections>
+        </uxap:ObjectPageLayout>
+    </Page>
+    <Dialog
+        id="_IDGenDialog1"
+        title="Vehicle Out"
+        class="sapUiContentPadding"
+    >
+        <content>
+            <VBox
+                id="_IDGenVBox11"
+                width="100%"
+            >
+
+                <Label id="_IDGenLabel4" text="Remarks:" />
+                <TextArea
+                    id="VehOutRemarks"
+                    width="100%"
+                />
+                <Label id="_IDGenLabel5" text="Out Date" />
+                <DatePicker
+                    id="OutDate"
+                    valueFormat="yyyy-MM-ddTHH:mm:ss"
+                    displayFormat="yyyy-MM-dd"
+                />
+                <Label id="_IDGenLabel9" text="Out Time" />
+                <TimePicker
+                    id="OutTime"
+                    valueFormat="PTHH'H'mm'M'ss'S'"
+                />
+            </VBox>
+        </content>
+
+        <!-- Footer Buttons -->
+        <beginButton>
+            <Button
+                id="_IDGenButton11"
+                text="Post"
+                type="Emphasized"
+                press="onClickPost"
+            />
+        </beginButton>
+        <endButton>
+            <Button
+                id="_IDGenButton7"
+                text="Cancel"
+                press="onCloseDialog"
+            />
+        </endButton>
+    </Dialog>
+</mvc:View>
