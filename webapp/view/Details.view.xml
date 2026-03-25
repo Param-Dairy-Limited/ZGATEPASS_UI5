@@ -3,7 +3,7 @@
     xmlns="sap.m"
     xmlns:uxap="sap.uxap"
     xmlns:core="sap.ui.core"
-    xmlns:table="sap.ui.table"
+    xmlns:t="sap.ui.table"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:smartForm="sap.ui.comp.smartform"
     xmlns:smartTable="sap.ui.comp.smarttable"
@@ -112,6 +112,10 @@
                         <smartField:SmartField value="{VrnNo}" />
                     </smartForm:GroupElement>
 
+                     <smartForm:GroupElement>
+                        <smartField:SmartField value="{TransporterName}" />
+                    </smartForm:GroupElement>
+
                     <smartForm:GroupElement>
                         <smartField:SmartField value="{DriverName}" />
                     </smartForm:GroupElement>
@@ -206,39 +210,187 @@
                 >
                     <uxap:subSections>
                         <uxap:ObjectPageSubSection
-                            id="_IDGenObjectPageSubSection2"
-                        >
+                            id="_IDGenObjectPageSubSection2">
                             <uxap:blocks>
-                                <smartTable:SmartTable
-                                    id="_IDGenSmartTable1"
-                                    entitySet="GatePassLine"
-                                    smartFilterId="_IDGenSmartFilterBar"
-                                    tableType="ResponsiveTable"
-                                    fieldGroupIds="Entrydate"
-                                    header="Entry Lines"
-                                    persistencyKey="SmartTableAnalytical_Explored"
-                                    enableAutoBinding="true"
-                                    class="sapUiResponsiveContentPadding"
-                                    enableAutoColumnWidth="true"
-                                    editTogglable="false"
-                                    editable="{= ${edit>/editMode} === 'editable' }"
-                                    ignoredFields="__metadata"
-                                    app:useSmartToggle="true"
-                                    showFullScreenButton="true"
-                                    beforeRebindTable="onBeforeRebindTable"
-                                    initiallyVisibleFields="PassLineNo,DocumentNo,DocumentReference,MaterialName,DocumentDate,SupplierCode,SupplierName,Amount,Quantity,VrNo,Remarks,ExpectedReturnDate"
-                                >
-                                    <table:Table
-                                        id="_IDGenTable1"
-                                    />
-                                    <smartTable:layoutData>
-                                        <FlexItemData
-                                            id="_IDGenFlexItemData3"
-                                            growFactor="1"
-                                            baseSize="0%"
-                                        />
-                                    </smartTable:layoutData>
-                                </smartTable:SmartTable>
+                    <t:Table
+                        id="_IDGenSmartTable1"
+                        rows="{Details>/OrderDetailsTable}" 
+                    >
+                        <!-- Header Toolbar -->
+                        <t:extension>
+                            <!-- <OverflowToolbar>
+                                <Title text="Entry Lines" />
+                                <ToolbarSpacer />
+                                <Button
+                                    id="buttonAdd"
+                                    text="Add"
+                                    press="addLine" />
+                                <Button
+                                    text="Remove"
+                                    press="deleteLine" />
+                            </OverflowToolbar> -->
+                        </t:extension>
+
+                        <!-- Row Mode -->
+                        <t:rowMode>
+                            <rowmodes:Interactive minRowCount="5" />
+                        </t:rowMode>
+
+                        <!-- Columns -->
+                        <t:columns>
+
+                            <!-- S No -->
+                            <t:Column width="6rem">
+                                <Label text="Line No" />
+                                <t:template>
+                                    <Text text="{Details>PassLineNo}" />
+                                </t:template>
+                            </t:Column>
+
+                            <!-- Document No -->
+                        <t:Column width="12rem" visible="{Details>/Visibility}">
+                            <Label text="Document No" />
+                            <t:template>
+                                <Input
+                                    id="IDDocument11"
+                                    value="{Details>DocumentNo}"
+                                    type="Text"/>
+                            </t:template>
+                        </t:Column>
+
+                        <t:Column width="12rem" visible="{Details>/VisibilityGP}">
+                        <Label text="Material No"/>
+                        <t:template>
+                            <Input
+                                id="IDMaterial11"
+                                value="{Details>MaterialNo}"
+                                showValueHelp="{Details>/VisibilityGP}"
+                                valueHelpRequest="handlePCValueHelp"
+                                type="Text"/>
+                        </t:template>
+                    </t:Column>
+
+                            <!-- ODN No -->
+                            <t:Column width="12rem" visible="{Details>/Visibility}">
+                                <Label text="ODN No" />
+                                <t:template>
+                                    <Input value="{Details>DocumentReference}" 
+                                     editable="false"/>
+                                </t:template>
+                            </t:Column>
+
+                            <!-- Material Description -->
+                            <t:Column width="14rem" visible="{Details>/VisibilityGP}">
+                                <Label text="Material Description" />
+                                <t:template>
+                                    <Input
+                                        value="{Details>MaterialName}"
+                                        editable="false" />
+                                </t:template>
+                            </t:Column>
+
+                            <!-- Document Date -->
+                            <t:Column width="12rem" visible="{Details>/Visibility}">
+                                <Label text="Document Date" />
+                                <t:template>
+                                    <DatePicker
+                                        value="{Details>DocumentDate}"
+                                        displayFormat="dd-MM-yyyy"
+                                        valueFormat="yyyy-MM-dd"
+                                        editable="false"  />
+                                </t:template>
+                            </t:Column>
+
+                            <!-- Supplier Code -->
+                            <t:Column width="12rem" visible="{Details>/VisibilityGP}">
+                                <Label text="Supplier Code" />
+                                <t:template>
+                                    <Input
+                                        value="{Details>SupplierCode}"
+                                        showValueHelp="true"
+                                        valueHelpRequest="handleSupplierVH"
+                                        editable="false" />
+                                </t:template>
+                            </t:Column>
+
+                            <!-- Supplier Name -->
+                            <t:Column width="14rem" visible="{Details>/VisibilityGP}">
+                                <Label text="Supplier Name" />
+                                <t:template>
+                                    <Input
+                                        value="{Details>SupplierName}"
+                                        editable="false" />
+                                </t:template>
+                            </t:Column>
+
+                            <!-- Amount -->
+                            <t:Column width="10rem">
+                                <Label text="Amount" />
+                                <t:template>
+                                    <Input
+                                        value="{Details>Amount}"
+                                        type="Number"
+                                        change="calcAmount"
+                                        editable="false" />
+                                </t:template>
+                            </t:Column>
+
+                            <!-- Currency -->
+                            <t:Column width="8rem">
+                                <Label text="Currency" />
+                                <t:template>
+                                    <Input
+                                        value="{Details>Currency}"
+                                        editable="false" />
+                                </t:template>
+                            </t:Column>
+
+                            <!-- Quantity -->
+                            <t:Column width="10rem">
+                                <Label text="Quantity" />
+                                <t:template>
+                                    <Input
+                                        value="{Details>Quantity}"
+                                        type="Number"
+                                        editable="false" />
+                                </t:template>
+                            </t:Column>
+
+                            <!-- Unit -->
+                            <t:Column width="8rem">
+                                <Label text="Unit" />
+                                <t:template>
+                                    <Input
+                                        value="{Details>Unit}"
+                                        editable="false" />
+                                </t:template>
+                            </t:Column>
+
+                            <!-- Expected Return Date -->
+                            <t:Column width="14rem" visible="{Details>/VisibilityRGP}">
+                                <Label text="Expected Return Date" />
+                                <t:template>
+                                    <DatePicker
+                                        value="{Details>ExpectedReturnDate}"
+                                        displayFormat="dd-MM-yyyy"
+                                        valueFormat="yyyy-MM-dd"
+                                        editable="false" />
+                                </t:template>
+                            </t:Column>
+
+                            <!-- Remarks -->
+                            <t:Column width="16rem">
+                                <Label text="Remarks" />
+                                <t:template>
+                                    <Input
+                                        value="{Details>Remarks}"
+                                        maxLength="100"
+                                        editable="false" />
+                                </t:template>
+                            </t:Column>
+
+                        </t:columns>
+                    </t:Table>
                             </uxap:blocks>
                         </uxap:ObjectPageSubSection>
                     </uxap:subSections>

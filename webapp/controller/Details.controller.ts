@@ -22,6 +22,7 @@ export default class Details extends Controller {
     public gateEntry: any = {};
     public outDialog: Dialog;
     public checkHeader: any;
+    public LineModel: JSONModel;
     public removedLines: any = []
     public cancelled: any;
     public vehicleOut: any;
@@ -39,10 +40,9 @@ export default class Details extends Controller {
             GatePass: avcLic.split("'")[1],
             full: avcLic
         }
-
         this.oDataModel = new ODataModel("/sap/opu/odata/sap/ZUI_GATEPASS", {
             defaultCountMode: "None",
-            defaultUpdateMethod: UpdateMethod.Merge,
+            defaultUpdateMethod: UpdateMethod.MERGE,
         });
         this.oDataModel.setDefaultBindingMode("TwoWay");
         this.getView()!.setModel(this.oDataModel);
@@ -50,7 +50,42 @@ export default class Details extends Controller {
             editMode: "nonEditable"
         });
         this.getView()?.setModel(oEditModel, "edit");
-        this.oDataModel.read("/GatePass", {
+        this.oDataModel.read("/GatePassLine",{
+            filters: [
+                    new Filter("GatePass", FilterOperator.EQ, this.gateEntry.GatePass)
+                ],
+                success:function(response:any){
+                    const formattedResults = response.results.map((item: any) => {
+
+                    if (item.DocumentDate) {
+                        const date = new Date(item.DocumentDate);
+
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+
+                        item.DocumentDate = `${year}-${month}-${day}`;
+                    }
+                    else if (item.ExpectedReturnDate){
+                         const date = new Date(item.ExpectedReturnDate);
+
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+
+                        item.ExpectedReturnDate = `${year}-${month}-${day}`;
+                    }
+
+                    return item;
+                });
+                    that.LineModel.setProperty("/OrderDetailsTable",formattedResults);
+                    console.log(response.results);
+                },
+                error:function(error:any){
+                      return;
+                }
+        })
+            this.oDataModel.read("/GatePass", {
                 filters: [
                     new Filter("GatePass", FilterOperator.EQ, this.gateEntry.GatePass)
                 ],
@@ -58,6 +93,26 @@ export default class Details extends Controller {
                     if (oData.results.length > 0) {
                         this.cancelled = oData.results[0].Cancelled;
                         this.vehicleOut = oData.results[0].VehicleOut;
+                        this.checkHeader = oData.results[0].Type;
+                    if(this.checkHeader === "NRGP" || this.checkHeader === "RGP-OUT"){
+                        if(this.checkHeader === "RGP-OUT"){
+                            that.LineModel.setProperty("/VisibilityRGP", true);
+                            that.LineModel.setProperty("/VisibilityGP", true);
+                            that.LineModel.setProperty("/Visibility", false);
+                        }
+                        else{
+                            that.LineModel.setProperty("/VisibilityRGP", false);
+                            that.LineModel.setProperty("/VisibilityGP", true);
+                            that.LineModel.setProperty("/Visibility", false);                         
+                        }
+                    }
+                    else{
+                        if(this.checkHeader !== "PURR")
+                        that.LineModel.setProperty("/Visibility", true);
+                        that.LineModel.setProperty("/VisibilityGP", false);
+                        that.LineModel.setProperty("/VisibilityRGP", false);
+                        
+                    }
                    if(this.cancelled || this.vehicleOut){
                       (this.getView()?.getModel("edit") as JSONModel).setProperty("/editMode", "cancelled");
                    }
@@ -70,11 +125,8 @@ export default class Details extends Controller {
         var that = this;
         this.oDataModel.getMetaModel().loaded().then(function () {
             that.byId("smartForm")!.bindElement(avcLic);
-            that.byId("_IDGenSmartTable1")!.bindElement("/GatePassLine");
             BusyIndicator.hide();
         });
-        (that.byId("_IDGenSmartTable1") as SmartTable).rebindTable(true);
-
         this.oDataModel.attachRequestCompleted(function (data: any) {
             let reqDetails = data.getParameters();
             if (reqDetails.url === `GatePass('${that.gateEntry.GatePass}')` && reqDetails.method === 'GET') {
@@ -83,102 +135,105 @@ export default class Details extends Controller {
                 // (that.byId("Delete") as Button).setVisible(!headerRes.Cancelled && !headerRes.VehicleOut);
             }
         })
-         this.oDataModel.getMetaModel().loaded().then(function () {
-            that.byId("smartForm")!.bindElement(avcLic);
-            const smartTable = that.byId("_IDGenSmartTable1") as any;
-            smartTable.bindElement("/GatePassLine");
-            smartTable.attachInitialise(function () {
+    //      this.oDataModel.getMetaModel().loaded().then(function () {
+    //         that.byId("smartForm")!.bindElement(avcLic);
+    //         // const smartTable = that.byId("_IDGenSmartTable1") as any;
+    //         // smartTable.bindElement("/GatePassLine");
+    //     //     smartTable.attachInitialise(function () {
 
-            const oTable = smartTable.getTable();
-            if (!oTable) return;
-               oTable.getColumns().forEach(function (col: any) {
-                const field = col.data("p13nData")?.columnKey;
-                console.log(field);
-                console.log(that.checkHeader);
-            that.oDataModel.read("/GatePass", {
-                filters: [
-                    new Filter("GatePass", FilterOperator.EQ, that.gateEntry.GatePass)
-                ],
-                success: (oData: any) => {
-                    if (oData.results.length > 0) {
-                        that.checkHeader = oData.results[0].Type;
-                if (that.checkHeader === "NRGP" || that.checkHeader == "RGP-OUT") {
-                    console.log("1");
-                    console.log(field);
-                    if (field === "SupplierName" || field === "SupplierCode" || field === "MaterialName"  ) {
-                        col.setVisible(true);
-                        if(that.checkHeader == "RGP-OUT"){
-                             if(field === "ExpectedReturnDate")
-                                 col.setVisible(true);
-                        }
-                    }
-                    else if(field === "DocumentReference" || field === "DocumentDate"){
-                        col.setVisible(false);
-                    }
-                     else {
-                        col.setVisible(true);
-                    }
-                } else {
-                    console.log("2");
-                    if (field === "SupplierName" || field === "SupplierCode" || field === "MaterialName" || field === "ExpectedReturnDate") {
-                        col.setVisible(false);
-                    }
-                    else if(field === "DocumentReference"){
-                        if(that.checkHeader === "PURR")
-                           col.setVisible(false);
-                        else
-                           col.setVisible(true);
-                    }
-                    else if(field === "DocumentDate"){
-                        col.setVisible(true);
-                    }
-                     else {
-                        col.setVisible(true);
-                    }}
-                    }
-            },
-            error: (err: any) => {
-                console.log(err);
-            }
+    //     //     const oTable = smartTable.getTable();
+    //     //     if (!oTable) return;
+    //     //        oTable.getColumns().forEach(function (col: any) {
+    //     //         const field = col.data("p13nData")?.columnKey;
+    //     //         console.log(field);
+    //     //         console.log(that.checkHeader);
+    //     //     that.oDataModel.read("/GatePass", {
+    //     //         filters: [
+    //     //             new Filter("GatePass", FilterOperator.EQ, that.gateEntry.GatePass)
+    //     //         ],
+    //     //         success: (oData: any) => {
+    //     //             if (oData.results.length > 0) {
+    //     //                 that.checkHeader = oData.results[0].Type;
+    //     //         if (that.checkHeader === "NRGP" || that.checkHeader == "RGP-OUT") {
+    //     //             console.log("1");
+    //     //             console.log(field);
+    //     //             if (field === "SupplierName" || field === "SupplierCode" || field === "MaterialName"  ) {
+    //     //                 col.setVisible(true);
+    //     //                 if(that.checkHeader === "RGP-OUT"){
+    //     //                      if(field === "ExpectedReturnDate")
+    //     //                          col.setVisible(true);
+    //     //                 }
+    //     //             }
+    //     //             else if(field === "DocumentReference" || field === "DocumentDate"){
+    //     //                 col.setVisible(false);
+    //     //             }
+    //     //              else {
+    //     //                 col.setVisible(true);
+    //     //             }
+    //     //         } else {
+    //     //             console.log("2");
+    //     //             if (field === "SupplierName" || field === "SupplierCode" || field === "MaterialName" || field === "ExpectedReturnDate") {
+    //     //                 col.setVisible(false);
+    //     //             }
+    //     //             else if(field === "DocumentReference"){
+    //     //                 if(that.checkHeader === "PURR")
+    //     //                    col.setVisible(false);
+    //     //                 else
+    //     //                    col.setVisible(true);
+    //     //             }
+    //     //             else if(field === "DocumentDate"){
+    //     //                 col.setVisible(true);
+    //     //             }
+    //     //              else {
+    //     //                 col.setVisible(true);
+    //     //             }}
+    //     //             }
+    //     //     },
+    //     //     error: (err: any) => {
+    //     //         console.log(err);
+    //     //     }
+    //     // });
+    //     //     });
+    //     // });
+    //     BusyIndicator.hide();
+    // });
+        this.LineModel = new JSONModel({
+            OrderDetailsTable: []
         });
-            });
-        });
-
-        BusyIndicator.hide();
-    });
-        
+        this.getView()?.setModel(this.LineModel, "Details");
+        console.log(this.LineModel.getProperty("/OrderDetailsTable"));    
     }
 
-    public onBeforeRebindTable(e: any): void {
-        var that = this;
-        var b = e.getParameter("bindingParams"), aDateFilters = [];
-        aDateFilters.push(new Filter("GatePass", FilterOperator.EQ, this.gateEntry.GatePass))
-        var oOwnMultiFilter = new Filter(aDateFilters, true);
-        if (b.filters[0] && b.filters[0].aFilters) {
-            var oSmartTableMultiFilter = b.filters[0];
-            b.filters[0] = new Filter([oSmartTableMultiFilter, oOwnMultiFilter], true);
-        } else {
-            b.filters.push(oOwnMultiFilter);
-        }
-         let oTable: any = (this.byId("_IDGenSmartTable1") as any).getTable();
-         const aColumns = oTable.getColumns();
+    // public onBeforeRebindTable(e: any): void {
+    //     var that = this;
+    //     var b = e.getParameter("bindingParams"), aDateFilters = [];
+    //     aDateFilters.push(new Filter("GatePass", FilterOperator.EQ, this.gateEntry.GatePass))
+    //     var oOwnMultiFilter = new Filter(aDateFilters, true);
+    //     if (b.filters[0] && b.filters[0].aFilters) {
+    //         var oSmartTableMultiFilter = b.filters[0];
+    //         b.filters[0] = new Filter([oSmartTableMultiFilter, oOwnMultiFilter], true);
+    //     } else {
+    //         b.filters.push(oOwnMultiFilter);
+    //     }
+    //      let oTable: any = (this.byId("_IDGenSmartTable1") as any).getTable();
+    //      const aColumns = oTable.getColumns();
 
-        aColumns.forEach(function (oColumn:any) {
+    //     aColumns.forEach(function (oColumn:any) {
 
-            const oLabel = oColumn.getLabel();
+    //         const oLabel = oColumn.getLabel();
 
-            if (oLabel && oLabel.getText() === "Document No") {
+    //         if (oLabel && oLabel.getText() === "Document No") {
 
-                if (that.checkHeader === "RGP-OUT" || that.checkHeader === "NRGP") {
-                    oLabel.setText("Material No");
-                } else {
-                    oLabel.setText("Document No");
-                }
+    //             if (that.checkHeader === "RGP-OUT" || that.checkHeader === "NRGP") {
+    //                 oLabel.setText("Material No");
+    //             } else {
+    //                 oLabel.setText("Document No");
+    //             }
 
-            }
+    //         }
 
-        });
-    }
+    //     });
+    // }
     public onClickEdit(): void {
         const oEditModel = this.getView()?.getModel("edit") as JSONModel;
         oEditModel.setProperty("/editMode", "editable");
@@ -269,15 +324,12 @@ public cancelEntry() {
     }
 
   public tarewtChange(): void {
-
-        const gross = parseFloat(
-            (this.byId("_IDGenSmartField12") as any).getValue()
-        ) || 0;
-
-        const tare = parseFloat(
-            (this.byId("_IDGenSmartField13") as any).getValue()
-        ) || 0;
-
+        var grosswt = (this.byId("_IDGenSmartField12") as any).getValue();
+        grosswt = grosswt.replaceAll(",", "");
+        var tarewt = (this.byId("_IDGenSmartField13") as any).getValue();
+        tarewt = tarewt.replaceAll(",", "");
+        const gross = parseFloat(grosswt) || 0;
+        const tare = parseFloat(tarewt) || 0;
         const net = gross - tare;
 
         (this.byId("_IDGenSmartField21") as any)
@@ -286,15 +338,12 @@ public cancelEntry() {
 
 
     public grosswtChange(): void {
-
-        const gross = parseFloat(
-            (this.byId("_IDGenSmartField12") as any).getValue()
-        ) || 0;
-
-        const tare = parseFloat(
-            (this.byId("_IDGenSmartField13") as any).getValue()
-        ) || 0;
-
+        var grosswt = (this.byId("_IDGenSmartField12") as any).getValue();
+        grosswt = grosswt.replaceAll(",", "");
+        var tarewt = (this.byId("_IDGenSmartField13") as any).getValue();
+        tarewt = tarewt.replaceAll(",", "");
+        const gross = parseFloat(grosswt) || 0;
+        const tare = parseFloat(tarewt) || 0;
         const net = gross - tare;
 
         (this.byId("_IDGenSmartField21") as any)
@@ -347,42 +396,20 @@ public cancelEntry() {
                         groupId: "updateDetails"
                     }
                 );
-
             }
-
         }
-
     }
-
-    const oTable: any = (this.byId("_IDGenSmartTable1") as any).getTable();
-
-    const lines = oTable
-        .getBinding("rows")
-        .getContexts()
-        .map((c: any) => c.getObject());
-
-    if (lines.length <= 0) {
-
-        MessageBox.error("No Lines Found in GatePass. Unable to save.");
-        BusyIndicator.hide();
-        return;
-
-    }
-
+    let lines = this.LineModel.getProperty("/OrderDetailsTable");
     for (let index = 0; index < lines.length; index++) {
-
         const element = {
             ...lines[index],
+            ExpectedReturnDate : DateFormat.getDateInstance({ pattern: "yyyy-MM-ddTHH:mm:ss" }).format(new Date(lines[index].ExpectedReturnDate)),
             Quantity: Number(lines[index].Quantity || 0).toFixed(2),
             Amount: Number(lines[index].Amount || 0).toFixed(2)
         };
-
         delete element.LineNum;
-
         if (element.new) {
-
             delete element.new;
-
             this.oDataModel.create(
                 this.gateEntry.full + "/to_GatePassLine",
                 element,
@@ -390,11 +417,8 @@ public cancelEntry() {
                     groupId: "updateDetails"
                 }
             );
-
         }
-
         else {
-
             delete element.__metadata;
             delete element.to_GatePass;
 
@@ -433,7 +457,7 @@ public cancelEntry() {
         MessageBox.success("GatePass Updated Successfully");
         const oEditModel = this.getView()?.getModel("edit") as JSONModel;
         oEditModel.setProperty("/editMode", "nonEditable");
-        (this.byId("_IDGenSmartTable1") as SmartTable).rebindTable(true)
+
     }
     BusyIndicator.hide();
 }

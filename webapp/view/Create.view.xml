@@ -227,6 +227,8 @@
 
                             <m:Label id="_IDGenLabel17" text="Vehicle Number" />
                             <m:Input id="_IDGenInput2" value="{Header>/VrnNo}" liveChange="onValueChange" maxLength="10" />
+                            <m:Label id="_IDGenLabel171" text="Transporter Name" />
+                            <m:Input id="_IDGenInput211" value="{Header>/TransporterName}" type="Text" />
                             <m:Label id="_IDGenLabel26"  text="Weigh Slip No"/>
                             <m:Input id="_IDGenInput4" value="{Header>/WeighSlipNo}"/>
 
@@ -301,12 +303,22 @@
             </t:template>
         </t:Column>
 
-    <t:Column width="11rem">
-        <m:Label text="{Details>/DocumentLabel}" />
+        <t:Column width="11rem" visible="{Details>/Visibility}">
+            <m:Label text="Document No" />
+            <t:template>
+                <m:Input
+                    id="IDDocument"
+                    value="{Details>DocumentNo}"
+                    type="Text"/>
+            </t:template>
+        </t:Column>
+
+        <t:Column width="11rem" visible="{Details>/VisibilityGP}">
+        <m:Label text="Material No" />
         <t:template>
             <m:Input
-                id="IDMaterial"
-                value="{Details>DocumentNo}"
+                id="IDMaterial1"
+                value="{Details>MaterialNo}"
                 showValueHelp="{Details>/VisibilityGP}"
                 valueHelpRequest="handlePCValueHelp"
                 type="Text"/>

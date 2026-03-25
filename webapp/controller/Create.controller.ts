@@ -73,10 +73,19 @@ export default class Create extends Controller {
         this.HeaderModel.setProperty("/TareWt", "0.000");
         this.HeaderModel.setProperty("/NetWt", "0.000");
         this.HeaderModel.setProperty("/Plant", "PU01");
+        let type = this.HeaderModel.getProperty("/Type");
         this.LineModel.setProperty("/Visibility", false);
         this.LineModel.setProperty("/VisibilityRGP", false);
         this.LineModel.setProperty("/DocumentLabel", "Document No");
         this.LineModel.setProperty("/VisibilityGP", false);
+        if(type === "RGP-OUT" || type === "NRGP"){
+            this.LineModel.setProperty("/VisibilityGP", true);
+            if(type === "RGP-OUT")
+                this.LineModel.setProperty("/VisibilityRGP", true);
+        }
+        else{
+            this.LineModel.setProperty("/Visibility", true);
+        }
         console.log(this.LineModel);
 
         this._MessageManager.removeAllMessages();
@@ -564,7 +573,6 @@ export default class Create extends Controller {
         if (data.length === 1) {
             (this.byId("EntryType") as ComboBox)?.setEditable(false);
         }
-        (this.byId("btnAdd") as Button).setVisible(false);
     }
 
        public deleteLine() {
@@ -677,8 +685,7 @@ export default class Create extends Controller {
                 if (lines && lines.length > 0) {
                     that.oDataModel.setDeferredGroups(["CreateLines"])
                     for (let i = 0; i < lines.length; i++) {
-                        delete lines[i].SNo;
-                        
+                        delete lines[i].SNo;          
                             that.oDataModel.create(`/GatePass('${createdHeader}')/to_GatePassLine`, lines[i], {
                                 groupId: "CreateLines"
                             })
@@ -833,8 +840,7 @@ export default class Create extends Controller {
 
 public calcAmount(oEvent: any) {
 
-    const oModel = this.getView()?.getModel("Details");
-    const aRows = oModel?.getProperty("/OrderDetailsTable") || [];
+    let aRows = this.LineModel.getProperty("/OrderDetailsTable") || [];
 
     let totalAmount = 0;
 
@@ -893,17 +899,6 @@ public calcAmount(oEvent: any) {
 
         return sIcon;
     }
-
-
-
-
-
-
-
-
-
-
-
 
     //****************Value Helps
     public PTCDialog: ValueHelpDialog;
@@ -1355,7 +1350,57 @@ public calcAmount(oEvent: any) {
             return;
         };
         if(that.HeaderModel.getProperty("/Type") === "RGP-OUT" || that.HeaderModel.getProperty("/Type") === "NRGP"){
+            this.oDataModel.read("/BillParty",{
+                filters: [new Filter({
+                filters: selectedData.map((data: any) => {
+                    return new Filter({
+                        filters: Object.keys(data).map((key: string) => {
+                            return new Filter(key, FilterOperator.EQ, data[key])
+                        }),
+                        and: true,
 
+                    })
+                }),
+                and: false
+            })],
+               success: function(response:any){
+                let OProperty = that.LineModel.getProperty("/OrderDetailsTable") || [];
+                let startSno = OProperty.length;
+                let sum = 0, qtysum = 0;
+                for (let index = 0; index < response.results.length; index++) {
+                    const object = response.results[index];
+                    sum += parseFloat(object.Amount);
+                    qtysum +=  parseFloat(object.BillingQuantity);
+
+                    OProperty.push({
+                        SNo: startSno + 1,
+                        DocumentNo: object.BillingDocument,
+                        MaterialNo: object.Material,
+                        MaterialName: object.MaterialDescription,
+                        SupplierName: object.PartyName,
+                        SupplierCode: object.PartyCode,
+                        Amount: object.Amount,
+                        Quantity: object.Quantity,
+                        Currency: object.Currency,
+                        Unit: object.Uom,
+                        Remarks:""
+                    })
+                    startSno += 1
+                }
+                that.HeaderModel.setProperty("/BillAmount",
+                    Number((parseFloat(that.HeaderModel.getProperty("/BillAmount")) || 0) + sum).toFixed(2)
+                );
+                (that.byId("Plant") as Input).setEditable(false);
+                (that.byId("EntryType") as ComboBox).setEditable(false);
+                that.LineModel.setProperty("/OrderDetailsTable", OProperty);
+                BusyIndicator.hide();
+            },
+               error: function(error:any){
+                 MessageBox.show(error);
+                 BusyIndicator.hide();
+                 return;
+               }
+            })
         }
         else{
             this.oDataModel.read("/BillingDocumentStdVH", {
@@ -1388,7 +1433,8 @@ public calcAmount(oEvent: any) {
                         Amount: object.Amount,
                         Quantity: object.BillingQuantity,
                         Currency: object.Currency,
-                        Unit: object.BillingQuantityUnit
+                        Unit: object.BillingQuantityUnit,
+                        Remarks:""
                     })
                     startSno += 1
                 }
