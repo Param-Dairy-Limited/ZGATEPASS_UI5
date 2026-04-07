@@ -22,7 +22,7 @@ builder:
         app:
           name: ZGATE_PASS
           package: ZGATEPASS
-          transport: DOTK900057
+          transport: DOTK900585
         exclude:
           - /test/
   resources:

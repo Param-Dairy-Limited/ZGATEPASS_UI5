@@ -404,6 +404,7 @@ public cancelEntry() {
         const element = {
             ...lines[index],
             ExpectedReturnDate : DateFormat.getDateInstance({ pattern: "yyyy-MM-ddTHH:mm:ss" }).format(new Date(lines[index].ExpectedReturnDate)),
+            DocumentDate :   lines[index].DocumentDate !== "" ? DateFormat.getDateInstance({ pattern: "yyyy-MM-ddTHH:mm:ss" }).format(new Date(lines[index].DocumentDate)) : "",
             Quantity: Number(lines[index].Quantity || 0).toFixed(2),
             Amount: Number(lines[index].Amount || 0).toFixed(2)
         };

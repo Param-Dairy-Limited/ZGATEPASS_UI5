@@ -378,7 +378,7 @@ export default class Create extends Controller {
                 console.error("Error fetching supplier details", oError);
             }
         });
-         OProperty[index].DocumentNo= aTokens[0].mProperties.key;
+         OProperty[index].MaterialNo= aTokens[0].mProperties.key;
         this.LineModel.setProperty("/OrderDetailsTable", OProperty);
         this.bulkrsDialog.close();
     }
